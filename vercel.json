@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/(workout|food)",
+            "destination": "/$1.html"
+        }
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false
+}
