@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>STEALTH | WAR MODE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            /* Stealth Color Palette */
+            --brand-primary: #cdf12a;
+            /* Electric Lime */
+            --brand-secondary: #00f2ff;
+            /* Sharp Cyan */
+            --bg-deep: #050505;
+            --surface: #0a0a0a;
+            --surface-elevated: #0f1011;
+            --border: rgba(255, 255, 255, 0.05);
+            --text-muted: rgba(255, 255, 255, 0.4);
+        }
+
+        * {
+            cursor: default;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            /* Force non-rounded across all elements */
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Tactical Grid Background */
+        .tactical-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center center;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, transparent 30%, var(--bg-deep) 100%);
+        }
+
+        /* Sharp Header */
+        .stealth-header {
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 2px solid var(--brand-primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Brutalist Card System */
+        .stealth-card {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+        }
+
+        .stealth-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 4px;
+            height: 4px;
+            background: var(--brand-primary);
+        }
+
+        .stealth-card:hover {
+            border-color: var(--brand-primary);
+            background: #141516;
+        }
+
+        /* Professional Typography */
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            line-height: 0.85;
+            color: #fff;
+        }
+
+        .outline-text {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            color: transparent;
+        }
+
+        /* Navigation */
+        .nav-link {
+            padding: 12px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.2s ease;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link.active {
+            background: var(--brand-primary);
+            color: #000;
+            border-color: var(--brand-primary);
+        }
+
+        .order-tag {
+            background: #fff;
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        /* Mobile Optimized Bottom Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            border-top: 1px solid var(--border);
+            display: flex;
+            z-index: 1000;
+        }
+
+        .bottom-tab {
+            flex: 1;
+            padding: 16px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-right: 1px solid var(--border);
+        }
+
+        .bottom-tab.active {
+            background: #111;
+            color: var(--brand-primary);
+            border-bottom: 2px solid var(--brand-primary);
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-slide {
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        @media (min-width: 1025px) {
+            .app-layout {
+                display: grid;
+                grid-template-columns: 260px 1fr;
+                gap: 60px;
+            }
+        }
+
+        /* Tactical Mode Logic */
+        .tactical-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #080808;
+            border: 1px solid var(--border);
+            padding: 4px;
+            position: relative;
+        }
+
+        .tactical-btn {
+            padding: 14px 0;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .tactical-btn.active {
+            color: #000;
+            background: var(--brand-primary);
+        }
+
+        .tactical-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body class="pb-20 lg:pb-0">
+    <div class="tactical-grid"></div>
+    <div class="vignette"></div>
+
+    <!-- Top Status Bar -->
+    <header class="stealth-header">
+        <div class="px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <h1 class="text-2xl font-black tracking-tighter">Hello, <span class="text-brand-primary"
+                        style="color: var(--brand-primary);">Venu</span></h1>
+            </div>
+
+            <div class="flex items-center gap-8">
+                <a href="food.html"
+                    class="hidden md:flex items-center gap-2 border border-white/10 px-4 py-2 hover:bg-white/5 transition-colors">
+                    <i data-lucide="utensils" class="w-3 h-3 text-brand-primary"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-white/60">Nutrition Ops</span>
+                </a>
+                <div class="text-right">
+                    <p class="text-[8px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Days Remaining</p>
+                    <p id="days-count" class="text-xl font-black mono text-brand-primary leading-none"
+                        style="color: var(--brand-primary);">---</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-container">
+        <div class="app-layout">
+
+            <!-- Sidebar (Desktop) -->
+            <aside class="hidden lg:block">
+                <div class="sticky top-32 space-y-12">
+                    <div>
+                        <p class="text-[9px] font-bold text-white/20 uppercase tracking-[0.3em] mb-6">Select Sector</p>
+                        <nav id="sidebar-nav" class="space-y-1">
+                            <!-- Dynamic Sidebar -->
+                        </nav>
+                    </div>
+                    <div class="border border-white/5 p-6 bg-white/[0.02]">
+                        <p class="text-[9px] font-bold text-white/40 uppercase mb-4">Current Progress</p>
+                        <div class="flex items-end gap-2 mb-2">
+                            <span class="text-3xl font-black mono text-brand-primary"
+                                style="color: var(--brand-primary);">01</span>
+                            <span class="text-xs font-bold text-white/20 mb-1">/ 210 DAYS</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-1 overflow-hidden">
+                            <div class="bg-brand-primary h-full w-[4%]" style="background-color: var(--brand-primary);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Stage -->
+            <div class="space-y-16">
+
+                <!-- Enhanced Tactical Switcher -->
+                <nav class="tactical-switcher mb-12">
+                    <a href="workout.html" class="tactical-btn active">Training_Ops</a>
+                    <a href="food.html" class="tactical-btn">Nutrition_Ops</a>
+                </nav>
+
+                <!-- Hero Header -->
+                <section>
+                    <div class="mb-4 flex items-center gap-3">
+                        <span id="day-mobile"
+                            class="lg:hidden text-[10px] font-black text-brand-primary uppercase tracking-[0.2em]"
+                            style="color: var(--brand-primary);"></span>
+                        <div class="h-[1px] flex-1 bg-white/10"></div>
+                    </div>
+                    <h1 id="routine-title" class="hero-title">PUSH A</h1>
+                    <div class="mt-6 flex flex-wrap items-center gap-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 border border-brand-primary"
+                                style="border-color: var(--brand-primary);"></div>
+                            <span id="routine-focus"
+                                class="text-xs font-bold uppercase tracking-[0.3em] text-white/60">CHEST &
+                                TRICEPS</span>
+                        </div>
+                        <div
+                            class="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] px-4 py-1 border border-white/5">
+                            High Volume Protocol
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Priming Sector -->
+                <section class="space-y-6">
+                    <p class="text-[9px] font-bold text-white/20 uppercase tracking-[0.5em]">Phase 00 // Priming</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
+                        <div class="bg-surface p-8 group">
+                            <div class="flex justify-between items-start mb-6">
+                                <span class="text-[9px] font-bold text-brand-primary uppercase"
+                                    style="color: var(--brand-primary);">Step_01</span>
+                                <i data-lucide="zap"
+                                    class="w-4 h-4 text-white/10 group-hover:text-brand-primary transition-colors"></i>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2">Elliptical Synchronization</h4>
+                            <p class="text-xs font-medium text-white/40 uppercase tracking-widest">10 Mins • Level 3-4
+                            </p>
+                        </div>
+                        <div class="bg-surface p-8 group">
+                            <div class="flex justify-between items-start mb-6">
+                                <span class="text-[9px] font-bold text-brand-primary uppercase"
+                                    style="color: var(--brand-primary);">Step_02</span>
+                                <i data-lucide="refresh-cw"
+                                    class="w-4 h-4 text-white/10 group-hover:text-brand-primary transition-colors"></i>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2">Joint Mobility</h4>
+                            <p class="text-xs font-medium text-white/40 uppercase tracking-widest">Circles • Twists •
+                                Squats</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Operations Gallery -->
+                <section class="space-y-8">
+                    <p class="text-[9px] font-bold text-white/20 uppercase tracking-[0.5em]">Phase 01 // Operations</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8" id="exercise-grid">
+                        <!-- Dynamic Operations -->
+                    </div>
+                </section>
+
+                <!-- Incinerator Post-Op -->
+                <section id="cardio-section" class="hidden">
+                    <div class="bg-brand-primary p-[1px]" style="background-color: var(--brand-primary);">
+                        <div class="bg-black p-10 relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-10 tactical-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-4 mb-10">
+                                    <div class="w-10 h-[10px] bg-brand-primary"
+                                        style="background-color: var(--brand-primary);"></div>
+                                    <h3 class="text-3xl font-black tracking-tighter italic">FAT_INCINERATOR.EXE</h3>
+                                </div>
+                                <div class="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                                    <div>
+                                        <p class="text-[9px] font-bold text-white/30 uppercase mb-2">Mechanism</p>
+                                        <p class="text-xl font-bold mono">Treadmill</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-white/30 uppercase mb-2">Incline</p>
+                                        <p class="text-xl font-bold mono text-brand-primary"
+                                            style="color: var(--brand-primary);">MAX 12-15</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-white/30 uppercase mb-2">Velocity</p>
+                                        <p class="text-xl font-bold mono">3.5-4.0 km/h</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-white/30 uppercase mb-2">Duration</p>
+                                        <p class="text-xl font-bold mono">20:00</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 border-l-2 border-brand-primary pl-6"
+                                    style="border-color: var(--brand-primary);">
+                                    <span class="text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em]"
+                                        style="color: var(--brand-primary);">Strict Compliance: No Handrails. Swing
+                                        Arms.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tactical Support -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5 border border-white/5">
+                    <div class="bg-surface p-8">
+                        <i data-lucide="droplet" class="text-white/20 w-5 h-5 mb-6"></i>
+                        <h4 class="text-xs font-bold uppercase tracking-widest mb-3">Hydration</h4>
+                        <p class="text-[10px] text-white/40 leading-relaxed uppercase font-bold tracking-wider">1 Liter
+                            Water Sequence Required During Ops.</p>
+                    </div>
+                    <div class="bg-surface p-8">
+                        <i data-lucide="zap" class="text-white/20 w-5 h-5 mb-6"></i>
+                        <h4 class="text-xs font-bold uppercase tracking-widest mb-3">Nutrition</h4>
+                        <p class="text-[10px] text-white/40 leading-relaxed uppercase font-bold tracking-wider">High
+                            Protein Intake Immediately Post-Session.</p>
+                    </div>
+                    <div class="bg-surface p-8">
+                        <i data-lucide="shield" class="text-white/20 w-5 h-5 mb-6"></i>
+                        <h4 class="text-xs font-bold uppercase tracking-widest mb-3">Structural</h4>
+                        <p class="text-[10px] text-white/40 leading-relaxed uppercase font-bold tracking-wider">Do Not
+                            Bypas Adductor Circuits. Stability Priority.</p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Navigation -->
+    <nav class="bottom-bar lg:hidden">
+        <button onclick="setDay('mon')" id="tab-mon" class="bottom-tab">Mon</button>
+        <button onclick="setDay('tue')" id="tab-tue" class="bottom-tab">Tue</button>
+        <button onclick="setDay('wed')" id="tab-wed" class="bottom-tab">Wed</button>
+        <button onclick="setDay('thu')" id="tab-thu" class="bottom-tab">Thu</button>
+        <button onclick="setDay('fri')" id="tab-fri" class="bottom-tab">Fri</button>
+        <button onclick="setDay('sat')" id="tab-sat" class="bottom-tab">Sat</button>
+        <button onclick="setDay('sun')" id="tab-sun" class="bottom-tab">Sun</button>
+    </nav>
+
+    <script>
+        const PROTOCOL = {
+            "mon": {
+                "day": "Monday", "routine": "Push A", "focus": "Chest & Triceps", "hasCardio": true, "icon": "zap",
+                "exercises": [
+                    { "name": "Machine Chest Press", "load": "4 Sets • 10-12 Reps", "rest": "90s", "cue": "Heavy builder. Pin shoulders back." },
+                    { "name": "Incline DB Press", "load": "4 Sets • 12 Reps", "rest": "60s", "cue": "Focus on upper chest shelf." },
+                    { "name": "Seated Overhead Press", "load": "4 Sets • 10-12 Reps", "rest": "90s", "cue": "Use back support. Press from ears up." },
+                    { "name": "Pec Deck Fly", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Squeeze hard at center for 1 sec." },
+                    { "name": "Tricep Rope Pushdown", "load": "4 Sets • 15 Reps", "rest": "45s", "cue": "Flare ropes at bottom." },
+                    { "name": "Single Arm Cable Ext", "load": "3 Sets • 12 Reps", "rest": "30s", "cue": "No rest between arms. Burnout." },
+                    { "name": "Bench Dips", "load": "3 Sets • Failure", "rest": "60s", "cue": "Keep legs bent to help." }
+                ]
+            },
+            "tue": {
+                "day": "Tuesday", "routine": "Pull A", "focus": "Back Width & Biceps", "hasCardio": true, "icon": "anchor",
+                "exercises": [
+                    { "name": "Lat Pulldown (Wide)", "load": "4 Sets • 12 Reps", "rest": "90s", "cue": "Pull to upper chest. Lean back." },
+                    { "name": "Seated Cable Row", "load": "4 Sets • 12 Reps", "rest": "90s", "cue": "Heavy rows. Squeeze hard." },
+                    { "name": "T-Bar Row (Supported)", "load": "4 Sets • 10-12 Reps", "rest": "90s", "cue": "Preferred: Use chest pad." },
+                    { "name": "Face Pulls", "load": "4 Sets • 15 Reps", "rest": "60s", "cue": "Pull to forehead. Fix posture." },
+                    { "name": "Standing EZ Bar Curl", "load": "3 Sets • 12 Reps", "rest": "60s", "cue": "Strict form. No swinging." },
+                    { "name": "Hammer Curls", "load": "4 Sets • 12 Reps", "rest": "60s", "cue": "Heavy DBs. Thumbs up." },
+                    { "name": "Wrist Curls (Forearms)", "load": "3 Sets • 20 Reps", "rest": "30s", "cue": "Roll barbell up with fingers." }
+                ]
+            },
+            "wed": {
+                "day": "Wednesday", "routine": "Legs", "focus": "The Wheel Build", "hasCardio": false, "icon": "target",
+                "exercises": [
+                    { "name": "Leg Press", "load": "5 Sets • 12-15 Reps", "rest": "90s", "cue": "Feet high on plate. No knee locking." },
+                    { "name": "Leg Extensions", "load": "4 Sets • 15 Reps", "rest": "60s", "cue": "Squeeze quads at top." },
+                    { "name": "Seated Leg Curl", "load": "4 Sets • 12 Reps", "rest": "60s", "cue": "Control the negative." },
+                    { "name": "Inner Thigh (Adductor)", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Squeeze legs together." },
+                    { "name": "Outer Thigh (Abductor)", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Push legs out. Glute focus." },
+                    { "name": "Seated Calf Raise", "load": "4 Sets • 20 Reps", "rest": "45s", "cue": "Full stretch at bottom." },
+                    { "name": "Standing Calf Raise", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Heavy hold at top." }
+                ]
+            },
+            "thu": {
+                "day": "Thursday", "routine": "Push B", "focus": "Shoulders & Chest", "hasCardio": true, "icon": "triangle",
+                "exercises": [
+                    { "name": "Machine Shoulder Press", "load": "4 Sets • 12 Reps", "rest": "60s", "cue": "Constant tension." },
+                    { "name": "Lateral Raises (DB)", "load": "5 Sets • 15 Reps", "rest": "45s", "cue": "High volume. Pour water jug." },
+                    { "name": "Front Plate Raise", "load": "3 Sets • 12 Reps", "rest": "45s", "cue": "Lift to eye level." },
+                    { "name": "Incline Machine Press", "load": "4 Sets • 12 Reps", "rest": "60s", "cue": "Upper chest focus." },
+                    { "name": "Cable Crossovers", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Squeeze bottom of chest." },
+                    { "name": "Skull Crushers", "load": "3 Sets • 12 Reps", "rest": "60s", "cue": "Lower to forehead. Elbows in." },
+                    { "name": "Tricep Overhead Extension", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Stretch the long head." }
+                ]
+            },
+            "fri": {
+                "day": "Friday", "routine": "Pull B", "focus": "Thickness & Arms", "hasCardio": true, "icon": "mountain",
+                "exercises": [
+                    { "name": "Lat Pulldown (Reverse)", "load": "4 Sets • 12 Reps", "rest": "60s", "cue": "Targets lower lats." },
+                    { "name": "Single Arm DB Row", "load": "3 Sets • 12 Reps", "rest": "60s", "cue": "Pull DB to hip." },
+                    { "name": "Straight Arm Pulldown", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Keep arms straight." },
+                    { "name": "Dumbbell Shrugs", "load": "4 Sets • 15 Reps", "rest": "60s", "cue": "Traps to ears. Heavy." },
+                    { "name": "Preacher Curls", "load": "4 Sets • 15 Reps", "rest": "45s", "cue": "Isolates bicep. Squeeze hard." },
+                    { "name": "Incline DB Curls", "load": "3 Sets • 12 Reps", "rest": "60s", "cue": "Sit back at 45°." },
+                    { "name": "Cable Bicep Curls", "load": "3 Sets • 15 Reps", "rest": "45s", "cue": "Burnout set." }
+                ]
+            },
+            "sat": {
+                "day": "Saturday", "routine": "Tank Circuit", "focus": "Conditioning", "hasCardio": true, "icon": "swords",
+                "exercises": [
+                    { "name": "Rope Crunches", "load": "4 Sets • 20 Reps", "rest": "45s", "cue": "Heavy abs." },
+                    { "name": "Plank", "load": "3 Sets • Max", "rest": "60s", "cue": "Hold as long as possible." },
+                    { "name": "Mountain Climbers (Slow)", "load": "3 Sets • 20 Reps", "rest": "45s", "cue": "Knee to chest." },
+                    { "name": "Battle Ropes", "load": "5 Sets • 30s", "rest": "60s", "cue": "Explosive cardio." },
+                    { "name": "Farm Walk", "load": "4 Sets • 1 min", "rest": "60s", "cue": "Heavy dumbbells." },
+                    { "name": "Wall Sit", "load": "3 Sets • Max", "rest": "60s", "cue": "Sit against wall." }
+                ]
+            },
+            "sun": {
+                "day": "Sunday", "routine": "Total Rest", "focus": "Recovery Active", "hasCardio": false, "icon": "moon", "exercises": []
+            }
+        };
+
+        const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+        let activeDay = new Date().toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
+        if (!PROTOCOL[activeDay]) activeDay = 'mon';
+
+        async function init() {
+            renderNav();
+            setDay(activeDay);
+            updateCountdown();
+            lucide.createIcons();
+        }
+
+        function renderNav() {
+            const sidebar = document.getElementById('sidebar-nav');
+            sidebar.innerHTML = days.map(d => `
+                <button onclick="setDay('${d}')" class="nav-link ${d === activeDay ? 'active' : ''}" id="side-${d}">
+                    <span class="mono opacity-50 text-[10px]">${d.toUpperCase()}</span>
+                    <span>${PROTOCOL[d].routine}</span>
+                </button>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function setDay(day) {
+            activeDay = day;
+            const data = PROTOCOL[day];
+
+            renderNav();
+
+            // Bottom Bar state
+            days.forEach(d => {
+                const tab = document.getElementById('tab-' + d);
+                if (tab) {
+                    tab.classList.toggle('active', d === day);
+                }
+            });
+
+            document.getElementById('routine-title').innerText = data.routine.toUpperCase();
+            document.getElementById('routine-focus').innerText = data.focus;
+            const mobDay = document.getElementById('day-mobile');
+            if (mobDay) mobDay.innerText = data.day;
+
+            const cardioSection = document.getElementById('cardio-section');
+            if (data.hasCardio) cardioSection.classList.remove('hidden');
+            else cardioSection.classList.add('hidden');
+
+            const grid = document.getElementById('exercise-grid');
+            if (data.exercises.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-32 border border-white/5 bg-white/[0.02] text-center">
+                        <p class="text-[10px] font-black tracking-[1em] text-white/20 uppercase">Standby: Recovery Sequence</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = data.exercises.map((ex, idx) => `
+                <div class="stealth-card p-10 group animate-slide" style="animation-delay: ${idx * 0.05}s">
+                    <span class="order-tag">${idx + 1}</span>
+                    <div class="mb-10">
+                        <h4 class="text-2xl font-black text-white leading-none tracking-tight mb-4">${ex.name}</h4>
+                        <div class="flex gap-6">
+                            <span class="text-[10px] font-bold text-brand-primary uppercase mono" style="color: var(--brand-primary);">${ex.load}</span>
+                            <span class="text-[10px] font-bold text-white/20 uppercase mono">REST: ${ex.rest}</span>
+                        </div>
+                    </div>
+                    <div class="pt-8 border-t border-white/5">
+                        <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] leading-loose">${ex.cue}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateCountdown() {
+            const startDate = new Date('2026-02-09T00:00:00');
+            const targetDate = new Date(startDate);
+            targetDate.setDate(startDate.getDate() + 210);
+
+            const now = new Date();
+            const diff = targetDate - now;
+            const daysRemaining = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+
+            document.getElementById('days-count').innerText = daysRemaining;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
