@@ -21,6 +21,7 @@
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
 
@@ -193,9 +194,11 @@
 
     <header class="stealth-header">
         <div class="px-6 py-4 flex justify-between items-center max-w-[1600px] mx-auto w-full">
-            <div class="flex items-center gap-2">
-                <h1 class="text-2xl font-black tracking-tighter">Hello, <span class="text-brand-primary">Venu</span>
-                </h1>
+            <div class="flex items-center gap-3">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    class="text-brand-primary">
+                    <path d="M6 6H12L16 18L20 6H26L19 26H13L6 6Z" fill="currentColor" />
+                </svg>
             </div>
 
             <div class="flex items-center gap-8">
@@ -205,8 +208,10 @@
                     <span class="text-[9px] font-bold uppercase tracking-widest text-white/60">Training Ops</span>
                 </a>
                 <div class="text-right">
-                    <p class="text-[8px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Days Remaining</p>
-                    <p id="days-count" class="text-xl font-black mono text-brand-primary leading-none glow-text">---</p>
+                    <p
+                        class="text-5xl font-black mono text-brand-primary leading-none glow-text uppercase tracking-tighter">
+                        <span id="days-count">---</span><span class="text-xl text-white/20"> Days</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -255,6 +260,13 @@
             </aside>
 
             <div class="space-y-16">
+
+                <div class="mb-4">
+                    <p class="text-[10px] font-black text-white/20 uppercase tracking-[0.5em] mb-2">Personnel
+                        Identification</p>
+                    <h2 class="text-4xl font-black uppercase tracking-tight">Hello, <span
+                            class="text-brand-primary">Venu</span></h2>
+                </div>
 
                 <nav class="tactical-switcher mb-12">
                     <a href="workout.html" class="tactical-btn">Training_Ops</a>
