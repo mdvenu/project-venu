@@ -2,8 +2,16 @@
     "version": 2,
     "rewrites": [
         {
+            "source": "/",
+            "destination": "/workout.html"
+        },
+        {
             "source": "/(workout|food)",
             "destination": "/$1.html"
+        },
+        {
+            "source": "/favicon.ico",
+            "destination": "/favicon.svg"
         }
     ],
     "cleanUrls": true,
