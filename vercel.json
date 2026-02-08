@@ -3,10 +3,10 @@
     "rewrites": [
         {
             "source": "/",
-            "destination": "/workout.html"
+            "destination": "/index.html"
         },
         {
-            "source": "/(workout|food)",
+            "source": "/(workout|food|index)",
             "destination": "/$1.html"
         },
         {
